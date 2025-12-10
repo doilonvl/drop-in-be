@@ -17,7 +17,7 @@ export const homeContentRepo = {
       });
     }
 
-    const doc = await query.exec();
+    const doc = await query.lean().exec();
     return doc;
   },
 

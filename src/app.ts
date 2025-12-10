@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
+import compression from "compression";
 import cookieParser from "cookie-parser";
 import uploadRoutes from "./routes/upload.routes";
 import authRoutes from "./routes/auth.routes";
@@ -30,6 +31,7 @@ app.use(
 );
 
 app.use(helmet());
+app.use(compression());
 app.use(cookieParser());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));

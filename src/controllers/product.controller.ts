@@ -142,6 +142,7 @@ export const productController = {
         published,
         isBestSeller,
         isSignatureLineup,
+        withCount,
         sort,
       } = req.query as any;
 
@@ -170,6 +171,7 @@ export const productController = {
           typeof isSignatureLineup === "string"
             ? isSignatureLineup === "true"
             : undefined,
+        withCount: withCount !== "false",
         sort: (sort as any) || "-createdAt",
       });
 
@@ -203,6 +205,7 @@ export const productController = {
         published,
         isBestSeller,
         isSignatureLineup,
+        withCount,
         sort,
       } = req.query as any;
 
@@ -230,6 +233,7 @@ export const productController = {
           typeof isSignatureLineup === "string"
             ? isSignatureLineup === "true"
             : undefined,
+        withCount: withCount !== "false",
         sort: (sort as any) || "-createdAt",
       });
 

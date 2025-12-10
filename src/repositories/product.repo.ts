@@ -13,6 +13,7 @@ export type ProductListOpts = {
   published?: boolean;
   isBestSeller?: boolean;
   isSignatureLineup?: boolean;
+  withCount?: boolean;
   sort?:
     | "name"
     | "-name"
@@ -133,14 +134,15 @@ export const productRepo = {
   async list(opts: ProductListOpts = {}) {
     const {
       page = 1,
-      limit = 20,
-      q,
-      category,
-      published,
-      isBestSeller,
-      isSignatureLineup,
-      sort,
-    } = opts;
+    limit = 20,
+    q,
+    category,
+    published,
+    isBestSeller,
+    isSignatureLineup,
+    withCount = true,
+    sort,
+  } = opts;
 
     const filter: FilterQuery<IProduct> = {};
 
@@ -177,17 +179,23 @@ export const productRepo = {
       sortObj = { createdAt: -1 };
     }
 
-    const skip = (page - 1) * limit;
+    const safeLimit = Math.min(Math.max(Number(limit) || 20, 1), 50);
+    const skip = (page - 1) * safeLimit;
 
     const [items, total] = await Promise.all([
-      ProductModel.find(filter).sort(sortObj).skip(skip).limit(limit).lean(),
-      ProductModel.countDocuments(filter),
+      ProductModel.find(filter)
+        .sort(sortObj)
+        .skip(skip)
+        .limit(safeLimit)
+        .lean(),
+      withCount ? ProductModel.countDocuments(filter) : Promise.resolve(0),
     ]);
 
-    return { items, total, page, limit };
+    return { items, total: withCount ? total : items.length, page, limit: safeLimit };
   },
 
   async listBestSellers(limit = 6, category?: ProductCategory) {
+    const safeLimit = Math.min(Math.max(Number(limit) || 6, 1), 20);
     const filter: FilterQuery<IProduct> = {
       isPublished: true,
       isBestSeller: true,
@@ -196,11 +204,12 @@ export const productRepo = {
 
     return ProductModel.find(filter)
       .sort({ bestSellerOrder: 1, createdAt: -1 })
-      .limit(limit)
+      .limit(safeLimit)
       .lean();
   },
 
   async listSignatureLineup(limit = 6, category?: ProductCategory) {
+    const safeLimit = Math.min(Math.max(Number(limit) || 6, 1), 20);
     const filter: FilterQuery<IProduct> = {
       isPublished: true,
       isSignatureLineup: true,
@@ -209,7 +218,7 @@ export const productRepo = {
 
     return ProductModel.find(filter)
       .sort({ signatureOrder: 1, createdAt: -1 })
-      .limit(limit)
+      .limit(safeLimit)
       .lean();
   },
 };

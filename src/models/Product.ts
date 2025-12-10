@@ -210,6 +210,14 @@ ProductSchema.pre("save", async function (next) {
 
 ProductSchema.index({ slug: 1 }, { unique: true });
 ProductSchema.index({ isPublished: 1, category: 1, isBestSeller: 1 });
+ProductSchema.index({ isPublished: 1, category: 1, createdAt: -1 });
+ProductSchema.index({ isPublished: 1, isBestSeller: 1, bestSellerOrder: 1, createdAt: -1 });
+ProductSchema.index({
+  isPublished: 1,
+  isSignatureLineup: 1,
+  signatureOrder: 1,
+  createdAt: -1,
+});
 
 ProductSchema.index({
   "name_i18n.vi": "text",
