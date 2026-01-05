@@ -8,6 +8,8 @@ import uploadRoutes from "./routes/upload.routes";
 import authRoutes from "./routes/auth.routes";
 import productRoutes from "./routes/product.routes";
 import homeContentRoutes from "./routes/homeContent.routes";
+import blogRoutes from "./routes/blog.routes";
+import publicBlogRoutes from "./routes/publicBlog.routes";
 
 const app = express();
 
@@ -45,6 +47,8 @@ app.use(`${API_BASE}/upload`, uploadRoutes);
 app.use(`${API_BASE}/auth`, authRoutes);
 app.use(`${API_BASE}/products`, productRoutes);
 app.use(`${API_BASE}/homeContent`, homeContentRoutes);
+app.use(`${API_BASE}/blogs`, blogRoutes);
+app.use(`${API_BASE}/public/blogs`, publicBlogRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ message: "Route not found" });
